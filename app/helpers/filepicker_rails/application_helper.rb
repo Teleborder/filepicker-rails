@@ -27,6 +27,10 @@ module FilepickerRails
       image_tag(filepicker_image_url(url, image_options), image_tag_options)
     end
 
+    def filepicker_secure_image_tag(url, image_options={}, image_tag_options={})
+      image_tag(filepicker_secure_url(filepicker_image_url(url, image_options)), image_tag_options)
+    end
+
     # w - Resize the image to this width.
     #
     # h - Resize the image to this height.
@@ -80,13 +84,11 @@ module FilepickerRails
         url.gsub!("#{uri.scheme}://#{uri.host}", ::Rails.application.config.filepicker_rails.cdn_host)
       end
 
-      image_url = if query_params.blank?
+      if query_params.blank?
         [url, query_params]
       else
         [url, "/convert?", query_params]
       end.join
-
-      filepicker_secure_url image_url
     end
 
     def filepicker_secure_url(url, privileges = [])
