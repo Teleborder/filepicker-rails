@@ -96,13 +96,13 @@ module FilepickerRails
       uri           = URI.parse(url)
       file_handle   = uri.path.split('/').delete_if(&:blank?)[2]
 
-      grant         = FilepickerRails::Policy.new handle: file_handle, call: privileges
+      grant = FilepickerRails::Policy.new handle: file_handle, call: privileges
 
-      decoded_query = URI.decode_www_form(uri.query || '')
-      decoded_query << [:signature, grant.signature]
-      decoded_query << [:policy, grant.policy]
+      query_hash = Hash[URI.decode_www_form(uri.query || '')]
+      query_hash[:signature] = grant.signature
+      query_hash[:policy] = grant.policy
 
-      uri.query     = decoded_query.map{|e| e.join('=') }.join('&')
+      uri.query = query_hash.to_query
       uri.to_s
     end
   end
