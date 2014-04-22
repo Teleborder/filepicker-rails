@@ -27,6 +27,10 @@ module FilepickerRails
       image_tag(filepicker_image_url(url, image_options), image_tag_options)
     end
 
+    def filepicker_secure_image_tag(url, image_options={}, image_tag_options={})
+      image_tag(filepicker_secure_url(filepicker_image_url(url, image_options)), image_tag_options)
+    end
+
     # w - Resize the image to this width.
     #
     # h - Resize the image to this height.
@@ -85,6 +89,21 @@ module FilepickerRails
       else
         [url, "/convert?", query_params]
       end.join
+    end
+
+    def filepicker_secure_url(url, privileges = [])
+      privileges    = privileges.blank? ? [:read, :convert] : privileges
+      uri           = URI.parse(url)
+      file_handle   = uri.path.split('/').delete_if(&:blank?)[2]
+
+      grant         = FilepickerRails::Policy.new handle: file_handle, call: privileges
+
+      decoded_query = URI.decode_www_form(uri.query || '')
+      decoded_query << [:signature, grant.signature]
+      decoded_query << [:policy, grant.policy]
+
+      uri.query     = decoded_query.map{|e| e.join('=') }.join('&')
+      uri.to_s
     end
   end
 end
