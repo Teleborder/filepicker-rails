@@ -19,11 +19,21 @@ module FilepickerRails
       OpenSSL::HMAC.hexdigest('sha256', ::Rails.application.config.filepicker_rails.secret_key, policy)
     end
 
+    def self.apply(call = [:read, :convert], keys = ['policy', 'signature'])
+      return {} unless ::Rails.application.config.filepicker_rails.secret_key.present?
+      grant = Policy.new
+      grant.call = call
+      {
+        keys[0] => grant.policy,
+        keys[1] => grant.signature
+      }
+    end
+
     private
     def json_policy
       hash = Hash.new
 
-      @expiry ||= Time.now.to_i + ::Rails.application.config.filepicker_rails.default_expiry
+      @expiry ||= ::Rails.application.config.filepicker_rails.expiry.call
 
       [:expiry, :call, :handle, :maxsize, :minsize, :path].each do |input|
         hash[input] = send(input) unless send(input).nil?
@@ -32,4 +42,5 @@ module FilepickerRails
       MultiJson.dump(hash)
     end
   end
+  private_constant :Policy
 end

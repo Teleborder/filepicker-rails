@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.4.0 (Unreleased)
+
+### features
+
+- Add option for max number of files
+
+## 1.3.0 (December 31, 2014)
+
+### features
+
+- Adds filepicker_save_link
+
+### improvements
+
+- Adds support to Rails 4.2
+
+## 1.2.0 (August 23, 2014)
+
+### features
+
+- filepicker_image_tag now works with policies
+
+### improvements
+
+- update to RSpec 3
+
+### bug fixes
+
+- Do not modify original url when using cdn
+
 ## 1.1.0 (March 30, 2014)
 
 ### features
@@ -43,4 +73,3 @@
 The changelog began with version 1.0.0 so any changes prior to that
 can be seen by checking the tagged releases and reading git commit
 messages.
-

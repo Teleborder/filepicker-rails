@@ -1,7 +1,6 @@
-require 'spec_helper'
-require 'timecop'
+require 'rails_helper'
 
-describe FilepickerRails::FormHelper do
+RSpec.describe FilepickerRails::FormHelper do
 
   let!(:form) do
     if rails_4_1_x?
@@ -111,6 +110,11 @@ describe FilepickerRails::FormHelper do
       it "have correct input with 'max_size'" do
         attribute = %{data-fp-maxSize="10"}
         expect(form.filepicker_field(:filepicker_url, max_size: 10)).to include(attribute)
+      end
+
+      it "have correct input with 'max_files'" do
+        attribute = %{data-fp-maxFiles="10"}
+        expect(form.filepicker_field(:filepicker_url, max_files: 10)).to include(attribute)
       end
 
       it "have correct input with 'onchange'" do
