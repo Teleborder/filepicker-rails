@@ -91,12 +91,12 @@ module FilepickerRails
       end.join
     end
 
-    def filepicker_secure_url(url, privileges = [])
+    def filepicker_secure_url(url, expiry = nil, privileges = [])
       privileges    = privileges.blank? ? [:read, :convert] : privileges
       uri           = URI.parse(url)
       file_handle   = uri.path.split('/').delete_if(&:blank?)[2]
 
-      grant = FilepickerRails::Policy.new handle: file_handle, call: privileges
+      grant = FilepickerRails::Policy.new handle: file_handle, call: privileges, expiry: expiry
 
       query_hash = Hash[URI.decode_www_form(uri.query || '')]
       query_hash[:signature] = grant.signature
